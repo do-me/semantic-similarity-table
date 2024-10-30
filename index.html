@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Column Adder</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind dark mode configuration
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-200">
+    <div class="max-w-4xl mx-auto p-6">
+        <!-- Theme Switcher -->
+        <div class="absolute top-4 right-4">
+            <div class="flex items-center space-x-2 bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm">
+                <span class="text-sm text-gray-700 dark:text-gray-300">Theme:</span>
+                <select id="themeSelect"
+                    class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded px-2 py-1 text-sm">
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </div>
+        </div>
+
+        <div class=" mb-10">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 text-center">Semantic Similarity Table - <a href="https://github.com/do-me/semantic-similarity-table" target="_blank" class="text-blue-500 hover:underline">GitHub</a></h1>
+            <p class="text-gray-600 dark:text-gray-400">
+                Drag and drop your Excel or CSV file with a text column for batch calculating semantic similarity for your queries.               
+                Using <a href="https://github.com/huggingface/transformers.js" target="_blank" class="text-blue-500 hover:underline">transformers.js</a> 
+                with a 32Mb model from <a href="https://github.com/MinishLab/model2vec" target="_blank" class="text-blue-500 hover:underline">model2vec</a> 
+                fully privately in your browser. Your data stays on your computer and is not sent anywhere!<br>
+                Need sample data? Use this xlsx <a href="data/legal_texts_EU.xlsx" download="legal_texts_EU.xlsx" class="text-blue-500 hover:underline">legal_texts_EU.xlsx</a> or this csv <a href="data/legal_texts_EU.csv" download="legal_texts_EU.csv" class="text-blue-500 hover:underline">legal_texts_EU.csv</a>.
+                Note that the first run is slower as it loads and caches the 32Mb model once. Conecutive runs are pretty much instant.
+
+                Created by <a href="https://www.linkedin.com/in/dominik-weckm%C3%BCller/" target="_blank" class="text-blue-500 hover:underline">Dominik Weckmüller</a> 
+                (<a href="https://geo.rocks" target="_blank" class="text-blue-500 hover:underline">Blog</a>).<br>              
+                Some of my other projects that inspired semantic similarity table:
+                <a href="https://do-me.github.io/SemanticFinder/" target="_blank" class="text-blue-500 hover:underline">SemanticFinder</a>, 
+                <a href="https://do-me.github.io/js-text-chunker/" target="_blank" class="text-blue-500 hover:underline">JS Text Chunker</a>, 
+                <a href="https://github.com/do-me/SDG-Analyzer" target="_blank" class="text-blue-500 hover:underline">SDG Analyzer</a>, 
+                <a href="https://do-me.github.io/semantic-hexbins/" target="_blank" class="text-blue-500 hover:underline">Geospatial Semantic Search</a>, 
+                <a href="https://do-me.github.io/qdrant-frontend/" target="_blank" class="text-blue-500 hover:underline">Qdrant Frontend</a>.
+                I'm available as freelancer for anything related to AI, LLMs, NLP and particularly semantic search and RAG - let's connect on <a href="https://www.linkedin.com/in/dominik-weckm%C3%BCller/" target="_blank" class="text-blue-500 hover:underline">LinkedIn</a>!
+            </p>
+              
+        </div>
+        <div class="space-y-6">
+            <div id="dropZone"
+                class="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-12 text-center hover:border-blue-500 transition-colors duration-200 cursor-pointer bg-white dark:bg-gray-800">
+                <div class="space-y-4">
+                    <div class="flex justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 dark:text-gray-500"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                    </div>
+                    <div class="text-gray-600 dark:text-gray-400">
+                        <span class="font-medium">Drop your Excel or CSV file here</span><br>
+                        <span class="text-sm">or click to select</span>
+                    </div>
+                </div>
+                <input type="file" id="fileInput" class="hidden" accept=".xlsx,.xls,.csv">
+            </div>
+            <div id="columnSettings" class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm space-y-4 hidden">
+                <div class="space-y-2">
+                    <label for="columnName" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Text
+                        column to be used for semantic similarity (first row is used for headers)</label>
+                    <input type="text" id="columnName"
+                        class="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                        placeholder="Enter column with text to analyze" value="text">
+                </div>
+                <div class="space-y-2">
+                    <label for="queryText" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Query
+                        text (theoretically unlimited in size but for best results keep < 300 words</label>
+                    <input type="text" id="queryText"
+                        class="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                        placeholder="Enter query text" value="Incredibly tasty food">
+                </div>
+
+                <!-- Add checkboxes for each optional column -->
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Select columns to
+                        add:</label>
+                    <div>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" id="maxSimCheckbox" class="text-blue-600 dark:text-blue-400" checked>
+                            <span class="ml-2 text-gray-700 dark:text-gray-300">Max Similarity</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" id="meanSimCheckbox" class="text-blue-600 dark:text-blue-400"
+                                checked>
+                            <span class="ml-2 text-gray-700 dark:text-gray-300">Mean similarity</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" id="maxSimChunkCheckbox" class="text-blue-600 dark:text-blue-400"
+                                checked>
+                            <span class="ml-2 text-gray-700 dark:text-gray-300">Max similarity chunk</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" id="chunksCheckbox" class="text-blue-600 dark:text-blue-400" checked>
+                            <span class="ml-2 text-gray-700 dark:text-gray-300">Chunks count</span>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" id="embeddingsCheckbox" class="text-blue-600 dark:text-blue-400">
+                            <span class="ml-2 text-gray-700 dark:text-gray-300">Include embeddings (causes large file size; use only with csv as xlsx has a limit of ~32k chars/cell)</span>
+                        </label>
+                    </div>
+
+                </div>
+                <button id="processButton"
+                    class="w-full bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors duration-200">
+                    Process File
+                </button>
+                <div id="status" class="hidden">
+                    <div class="bg-green-50 dark:bg-green-900 rounded-md p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-green-400 dark:text-green-300"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p id="statusMessage" class="text-sm font-medium text-green-800 dark:text-green-200">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="module" src="main.js"></script>
+</body>
+
+</html>
