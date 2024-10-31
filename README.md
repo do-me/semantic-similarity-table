@@ -1,6 +1,8 @@
 # Semantic Similarity Table
 Drag and drop your Excel or CSV file with a text column for batch calculating semantic similarity for your queries.
 
+![](data/sst.svg)
+
 App here: https://do-me.github.io/semantic-similarity-table/
 
 ## Short explanation 

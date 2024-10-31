@@ -1,14 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excel Column Adder</title>
+    <title>Semantic Similarity Table - Calculate Batch Similarity with AI Models</title>
+    
+    <!-- Meta Descriptions and Keywords for SEO -->
+    <meta name="description" content="Use our Semantic Similarity Table to batch process text files like Excel or CSV and calculate semantic similarity for queries using AI models. Private and secure.">
+    <meta name="keywords" content="semantic similarity, text analysis, AI model, batch processing, transformers.js, model2vec, NLP, CSV, Excel, private data processing">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="Semantic Similarity Table - Batch Text Analysis with AI Models">
+    <meta property="og:description" content="Easily process your Excel or CSV files for semantic similarity analysis using AI models with complete data privacy.">
+    <meta property="og:image" content="path/to/thumbnail.jpg">
+    <meta property="og:url" content="https://yourwebsite.com">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Semantic Similarity Table - Batch Text Analysis with AI Models">
+    <meta name="twitter:description" content="Easily process your Excel or CSV files for semantic similarity analysis using AI models with complete data privacy.">
+    <meta name="twitter:image" content="path/to/thumbnail.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="path/to/favicon.ico" type="image/x-icon">
+
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Tailwind dark mode configuration
         tailwind.config = {
             darkMode: 'class'
         }
@@ -17,10 +38,11 @@
 
 <body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-200">
     <div class="max-w-4xl mx-auto p-6">
+        
         <!-- Theme Switcher -->
-        <div class="absolute top-4 right-4">
+        <div class="absolute top-2 right-2 md:top-4 md:right-4">
             <div class="flex items-center space-x-2 bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm">
-                <span class="text-sm text-gray-700 dark:text-gray-300">Theme:</span>
+                
                 <select id="themeSelect"
                     class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded px-2 py-1 text-sm">
                     <option value="system">System</option>
@@ -29,15 +51,25 @@
                 </select>
             </div>
         </div>
+    
 
         <div class=" mb-10">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 text-center">Semantic Similarity Table - <a href="https://github.com/do-me/semantic-similarity-table" target="_blank" class="text-blue-500 hover:underline">GitHub</a></h1>
-            <p class="text-gray-600 dark:text-gray-400">
-                Drag and drop your Excel or CSV file with a text column for batch calculating semantic similarity for your queries.               
+                <!-- Logo and Title -->
+                <div class="flex flex-wrap items-center justify-center md:justify-start space-x-0 md:space-x-4 space-y-2 md:space-y-0">
+                    <img src="data/sst.svg" alt="Semantic Similarity Table Logo" class="h-12 md:h-16 w-auto">
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white text-center md:text-left">
+                        Semantic Similarity Table - 
+                        <a href="https://github.com/do-me/semantic-similarity-table" target="_blank" class="text-blue-500 hover:underline">
+                            GitHub
+                        </a>
+                    </h1>
+                </div>     
+                <p class="text-gray-600 dark:text-gray-400">
+                Drag and drop your Excel or CSV file to calculate batch semantic similarity for text queries using latest embedding models.               
                 Using <a href="https://github.com/huggingface/transformers.js" target="_blank" class="text-blue-500 hover:underline">transformers.js</a> 
                 with a 32Mb model from <a href="https://github.com/MinishLab/model2vec" target="_blank" class="text-blue-500 hover:underline">model2vec</a> 
                 fully privately in your browser. Your data stays on your computer and is not sent anywhere!<br>
-                Need sample data? Use this xlsx <a href="data/legal_texts_EU.xlsx" download="legal_texts_EU.xlsx" class="text-blue-500 hover:underline">legal_texts_EU.xlsx</a> or this csv <a href="data/legal_texts_EU.csv" download="legal_texts_EU.csv" class="text-blue-500 hover:underline">legal_texts_EU.csv</a>.
+                Need sample data? Use <a href="data/legal_texts_EU.xlsx" download="legal_texts_EU.xlsx" class="text-blue-500 hover:underline">legal_texts_EU.xlsx</a> or <a href="data/legal_texts_EU.csv" download="legal_texts_EU.csv" class="text-blue-500 hover:underline">legal_texts_EU.csv</a>.
                 Note that the first run is slower as it loads and caches the 32Mb model once. Conecutive runs are pretty much instant.
 
                 Created by <a href="https://www.linkedin.com/in/dominik-weckm%C3%BCller/" target="_blank" class="text-blue-500 hover:underline">Dominik Weckmüller</a> 
