@@ -15,3 +15,6 @@ For every text cell, the text is chunked and the chunks inferenced with model2ve
 Feel free to ask questions in the issues or discussions!
 
 ![image](https://github.com/user-attachments/assets/41082450-7170-4cb0-84f5-2f15fc90fc4a)
+
+## To Do 
+- add new potion models add allow as user settings
