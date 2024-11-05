@@ -1,4 +1,4 @@
-import { AutoModel, AutoTokenizer, Tensor } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.1';
+import { AutoModel, AutoTokenizer, Tensor } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2';
 
 // Additional checkboxes for column selection
 const maxSimCheckbox = document.getElementById('maxSimCheckbox');
@@ -223,8 +223,16 @@ async function processFile() {
         jsonData = XLSX.utils.sheet_to_json(sheet);
 
         // Load model and tokenizer
-        const model = await AutoModel.from_pretrained('minishlab/M2V_base_output', { revision: 'refs/pr/1' });
-        const tokenizer = await AutoTokenizer.from_pretrained('minishlab/M2V_base_output', { revision: 'refs/pr/2' });
+        //const model = await AutoModel.from_pretrained('minishlab/M2V_base_output', { revision: 'refs/pr/1' });
+        //const tokenizer = await AutoTokenizer.from_pretrained('minishlab/M2V_base_output', { revision: 'refs/pr/2' });
+
+        const selectedModel = document.getElementById('modelSelect').value;
+
+        const model = await AutoModel.from_pretrained(selectedModel, {
+            config: { model_type: 'model2vec' },
+            dtype: 'fp32'
+        });
+        const tokenizer = await AutoTokenizer.from_pretrained(selectedModel);
 
         const queryEmbedding = await getEmbedding(queryText, tokenizer, model);
         //console.log("Query embeddings:", queryEmbedding);
