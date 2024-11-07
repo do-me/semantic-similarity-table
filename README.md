@@ -32,4 +32,12 @@ Also have a look at my other projects, foremostly [SemanticFinder](https://do-me
 - [Geospatial Semantic Search](https://do-me.github.io/semantic-hexbins/)
 - [Qdrant Frontend](https://do-me.github.io/qdrant-frontend/)
 
+## To Do 
+- Cache chunk embeddings for consecutive runs
+
+## References
+- [Hugging Face Transformers.js GitHub Repository](https://github.com/huggingface/transformers.js)
+- [MinishLab on Hugging Face](https://huggingface.co/minishlab/)
+- [Potion Base 8M Model on Hugging Face](https://huggingface.co/minishlab/potion-base-8M)
+
 **I'm available as freelancer for anything related to AI, LLMs, NLP and particularly semantic search and RAG - let's connect on [LinkedIn](https://www.linkedin.com/in/dominik-weckm%C3%BCller/)!**
